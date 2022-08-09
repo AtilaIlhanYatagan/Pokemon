@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/pokemonListFragment">
+
+    <fragment
+        android:id="@+id/pokemonListFragment"
+        android:name="com.atila.pokedex.view.PokemonListFragment"
+        android:label="PokemonListFragment" >
+        <action
+            android:id="@+id/action_pokemonListFragment_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
+        <action
+            android:id="@+id/action_pokemonListFragment_to_favoritePokemonList22"
+            app:destination="@id/favoritePokemonList2" />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonDetailFragment"
+        android:name="com.atila.pokedex.view.PokemonDetailFragment"
+        android:label="PokemonDetailFragment" >
+        <action
+            android:id="@+id/action_pokemonDetailFragment_to_pokemonListFragment"
+            app:destination="@id/pokemonListFragment" />
+        <argument
+            android:name="pokemonName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritePokemonList2"
+        android:name="com.atila.pokedex.view.FavoritePokemonList"
+        android:label="fragment_favorite_pokemon_list"
+        tools:layout="@layout/fragment_favorite_pokemon_list" >
+        <action
+            android:id="@+id/action_favoritePokemonList2_to_pokemonListFragment"
+            app:destination="@id/pokemonListFragment" />
+        <action
+            android:id="@+id/action_favoritePokemonList_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
+    </fragment>
+</navigation>
