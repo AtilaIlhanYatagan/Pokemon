@@ -44,6 +44,9 @@
     </ProgressBar>
 
     <SearchView
+        android:queryHint="Search pokemons here"
+        android:iconifiedByDefault="false"
+
         android:background="#C3CCFF"
         android:id="@+id/searchView"
         android:layout_width="match_parent"

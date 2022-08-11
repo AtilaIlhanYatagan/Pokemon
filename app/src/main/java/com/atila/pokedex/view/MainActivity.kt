@@ -37,9 +37,11 @@ class MainActivity : AppCompatActivity() {
         // An icon only badge will be displayed unless a number is set:
         badge.number = 0
 
-        // to set the favorite badge count on the launch of the application
-        viewModel.refreshFavoritePokemonCount()
+
         observeLiveData()
+        // to set the favorite badge count on the launch of the application
+        refreshBadgeCount(viewModel.refreshFavoritePokemonCount())
+
 
         supportActionBar?.hide()
     }

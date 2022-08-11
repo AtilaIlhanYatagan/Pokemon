@@ -1,21 +1,30 @@
 package com.atila.pokedex.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.atila.pokedex.R
 import com.atila.pokedex.databinding.RecyclerviewItemBinding
-import com.atila.pokedex.model.PokemonDetail
 import com.atila.pokedex.model.Result
 import com.atila.pokedex.util.createPlaceHolder
 import com.atila.pokedex.util.downloadImage
 import com.atila.pokedex.view.PokemonListFragmentDirections
+import java.util.*
+import kotlin.collections.ArrayList
 
-class CardAdapter(private val pokemonList: ArrayList<com.atila.pokedex.model.Result>) :
-    RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
+class CardAdapter(private val pokemonList: ArrayList<Result>) :
+    RecyclerView.Adapter<CardAdapter.CardViewHolder>(), Filterable {
+
+    // arraylist to store filtered results
+    var filteredList = ArrayList<Result>()
+
+    init {
+        filteredList = pokemonList
+    }
 
     class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = RecyclerviewItemBinding.bind(itemView)
@@ -31,15 +40,16 @@ class CardAdapter(private val pokemonList: ArrayList<com.atila.pokedex.model.Res
         with(holder) {
 
             // setting all recyclerview items attributes
-            binding.pokemonListFragmentNameText.text = pokemonList[position].name
-            binding.listImage.downloadImage(pokemonList[position].getImageURL(), createPlaceHolder(binding.listImage.context))
-            //binding.listImage.setBackgroundColor(setBackgroundColor(pokemonList[position].types[0].type.name))
-
+            binding.pokemonListFragmentNameText.text = filteredList[position].name
+            binding.listImage.downloadImage(
+                filteredList[position].getImageURL(),
+                createPlaceHolder(binding.listImage.context)
+            )
 
             holder.itemView.setOnClickListener {
                 val action =
                     PokemonListFragmentDirections.actionPokemonListFragmentToPokemonDetailFragment(
-                        pokemonList[position].name
+                        filteredList[position].name
                     )
                 Navigation.findNavController(it).navigate(action)
             }
@@ -47,7 +57,7 @@ class CardAdapter(private val pokemonList: ArrayList<com.atila.pokedex.model.Res
     }
 
     override fun getItemCount(): Int {
-        return pokemonList.size
+        return filteredList.size
     }
 
     fun updatePokemonList(newPokemonList: ArrayList<Result>) {
@@ -56,34 +66,35 @@ class CardAdapter(private val pokemonList: ArrayList<com.atila.pokedex.model.Res
         notifyDataSetChanged()
     }
 
-    private fun setBackgroundColor(typeString: String): Int {
-         when (typeString) {
-            "normal" -> return Color.parseColor("#ffffff")
-            "unknown" -> return Color.parseColor("#ffffff")
-            "shadow" -> return Color.parseColor("#ffffff")
+    //https://www.tugbaustundag.com/android-recyclerviewa-search-filter-ekleme/
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                //string that is searched
+                val charSearch = constraint.toString()
+                //if searchView is empty set the filteredList as the mainList
+                if (charSearch.isEmpty()) {
+                    filteredList = pokemonList
+                } else {
+                    val resultList = ArrayList<Result>()
+                    for (row in pokemonList) {
+                        //if the search string matches with the name add it to the list
+                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                            resultList.add(row)
+                        }
+                    }
+                    filteredList = resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredList
+                return filterResults
+            }
 
-            "fighting" -> return Color.parseColor("#90B1C5")
-            "flying" -> return Color.parseColor("#90B1C5")
-            "poison" -> return Color.parseColor("#9F422A")
-            "ground" -> return Color.parseColor("#AD7235")
-            "rock" -> return Color.parseColor("#4B190E")
-            "bug" -> return Color.parseColor("#179A55")
-            "ghost" -> return Color.parseColor("#363069")
-            "steel" -> return Color.parseColor("#5C756D")
-            "fire" -> return Color.parseColor("#B22328")
-            "water" -> return Color.parseColor("#0091EA")
-            "grass" -> return Color.parseColor("#81C784")
-            "electric" -> return Color.parseColor("#FFD600")
-            "psychic" -> return Color.parseColor("#AC296B")
-            "ice" -> return Color.parseColor("#7ECFF2")
-            "dragon" -> return Color.parseColor("#378A94")
-            "fairy" -> return Color.parseColor("#9E1A44")
-            "dark" -> return Color.parseColor("#040706")
-
-
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredList = results?.values as ArrayList<Result>
+                notifyDataSetChanged()
+            }
         }
-        return 0
     }
 }
-
-

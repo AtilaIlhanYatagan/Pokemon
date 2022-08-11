@@ -4,24 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.atila.pokedex.R
 import com.atila.pokedex.adapters.CardAdapter
 import com.atila.pokedex.databinding.FragmentPokemonListBinding
 import com.atila.pokedex.viewmodel.PokemonListViewModel
 
 class PokemonListFragment : Fragment() {
 
+    //viewModel and adapter declarations
     private lateinit var viewModel: PokemonListViewModel
     private lateinit var adapter: CardAdapter
-    // private val adapter = CardAdapter(arrayListOf()) -> çalışan kısım
 
-    //ViewBinding declerations
+    //ViewBinding declarations
     private var _binding: FragmentPokemonListBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +35,7 @@ class PokemonListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //fragment viewmodel connection
+        //fragment viewModel connection
         viewModel = ViewModelProvider(this).get(PokemonListViewModel::class.java)
         viewModel.refreshData()
 
@@ -43,7 +44,23 @@ class PokemonListFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.recyclerView.adapter = adapter
 
+
         observeLiveData()
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener
+           {
+               override fun onQueryTextSubmit(query: String?): Boolean {
+
+                   return false
+               }
+
+               override fun onQueryTextChange(newText: String?): Boolean {
+                   adapter.filter.filter(newText)
+                   return false
+               }
+
+           })
+
 
     }
 
@@ -86,3 +103,4 @@ class PokemonListFragment : Fragment() {
         })
     }
 }
+
