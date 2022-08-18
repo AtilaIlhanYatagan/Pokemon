@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atila.pokedex.adapters.FavoriteAdapter
 import com.atila.pokedex.databinding.FragmentFavoritePokemonListBinding
 import com.atila.pokedex.viewmodel.FavoritePokemonsViewModel
+import kotlin.isInitialized as isInitialized
 
 
 class FavoritePokemonList : Fragment() {
@@ -18,13 +21,16 @@ class FavoritePokemonList : Fragment() {
     private lateinit var viewModel: FavoritePokemonsViewModel
     private lateinit var adapter: FavoriteAdapter
 
-    private var _binding: FragmentFavoritePokemonListBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var _binding: FragmentFavoritePokemonListBinding
+    private val binding get() = _binding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (::_binding.isInitialized) {
+            return binding.root
+        }
         _binding = FragmentFavoritePokemonListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,17 +39,34 @@ class FavoritePokemonList : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //fragment viewModel connection
-        viewModel = ViewModelProvider(this).get(FavoritePokemonsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FavoritePokemonsViewModel::class.java]
         viewModel.refreshData()
 
-        //two card in each row, adapter fragment connection
-        adapter = FavoriteAdapter(arrayListOf())
+        initRecyclerView()
+
         binding.favoriteRecyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.favoriteRecyclerView.adapter = adapter
 
         observeLiveData()
 
     }
+
+    private fun initRecyclerView() {
+        //two card in each row, adapter fragment connection
+        adapter = FavoriteAdapter(arrayListOf(), onItemClicked = { result, imageView ->
+            val extras = FragmentNavigatorExtras(
+                imageView to result.name
+            )
+            val action =
+                FavoritePokemonListDirections.actionFavoritePokemonListToPokemonDetailFragment(
+                    result.name
+                )
+
+            findNavController().navigate(action, extras)
+
+        })
+        binding.favoriteRecyclerView.adapter = adapter
+    }
+
 
     private fun observeLiveData() {
 

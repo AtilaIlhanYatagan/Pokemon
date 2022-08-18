@@ -4,43 +4,65 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.atila.pokedex.R
 import com.atila.pokedex.databinding.RecyclerviewItemBinding
 import com.atila.pokedex.model.PokemonDetail
+import com.atila.pokedex.model.Result
 import com.atila.pokedex.util.createPlaceHolder
 import com.atila.pokedex.util.downloadImage
 import com.atila.pokedex.view.FavoritePokemonListDirections
 
 
-class FavoriteAdapter(private val pokemonList: ArrayList<PokemonDetail>) :
+class FavoriteAdapter(
+    private val pokemonList: ArrayList<PokemonDetail>,
+    private val onItemClicked: (PokemonDetail, ImageView) -> Unit
+) :
     RecyclerView.Adapter<FavoriteAdapter.CardViewHolder>() {
 
-    class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = RecyclerviewItemBinding.bind(itemView)
+
+        // function for setting the each list item's attributes
+        fun bind(item: PokemonDetail) {
+            // for setting attributes
+            binding.pokemonListFragmentNameText.text = item.name
+            binding.listImage.downloadImage(
+                item.getImageURL(),
+                createPlaceHolder(binding.listImage.context)
+            )
+
+            // for shared element transition
+            binding.listImage.transitionName = item.name //-> unique transition name
+            binding.container.setOnClickListener { onItemClicked(item, binding.listImage) }
+
+        }
+
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): FavoriteAdapter.CardViewHolder {
+    ): CardViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.recyclerview_item, parent, false)
-        return FavoriteAdapter.CardViewHolder(view)
+        return CardViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
 
         with(holder) {
 
-            // setting all recyclerview items attributes
-            binding.pokemonListFragmentNameText.text = pokemonList[position].name
-            binding.listImage.downloadImage(pokemonList[position].getImageURL(), createPlaceHolder(binding.listImage.context))
+            val item = pokemonList[position]
+            bind(item)
+
             binding.listImage.setBackgroundColor(setBackgroundColor(pokemonList[position].types[0].type.name))
 
             holder.itemView.setOnClickListener {
-                val action = FavoritePokemonListDirections.actionFavoritePokemonListToPokemonDetailFragment(pokemonList[position].name)
+                val action = FavoritePokemonListDirections.actionFavoritePokemonListToPokemonDetailFragment(
+                        pokemonList[position].name)
                 Navigation.findNavController(it).navigate(action)
             }
         }
@@ -61,7 +83,6 @@ class FavoriteAdapter(private val pokemonList: ArrayList<PokemonDetail>) :
             "normal" -> return Color.parseColor("#ffffff")
             "unknown" -> return Color.parseColor("#ffffff")
             "shadow" -> return Color.parseColor("#ffffff")
-
             "fighting" -> return Color.parseColor("#90B1C5")
             "flying" -> return Color.parseColor("#90B1C5")
             "poison" -> return Color.parseColor("#9F422A")
@@ -83,7 +104,6 @@ class FavoriteAdapter(private val pokemonList: ArrayList<PokemonDetail>) :
         }
         return 0
     }
-
 
 
 }

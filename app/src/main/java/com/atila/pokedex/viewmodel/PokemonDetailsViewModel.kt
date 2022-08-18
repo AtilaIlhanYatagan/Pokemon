@@ -3,6 +3,7 @@ package com.atila.pokedex.viewmodel
 import android.app.Application
 import android.graphics.Color
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.atila.pokedex.model.*
 import com.atila.pokedex.service.PokemonAPIService
 import com.atila.pokedex.service.PokemonDatabase
@@ -32,7 +33,6 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
         }
     }
 
-
     fun getPokemonDataFromApi(name: String) {
 
         apiService.getPokemonData(name).enqueue(object : Callback<PokemonDetail> {
@@ -46,7 +46,7 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
             }
 
             override fun onFailure(call: Call<PokemonDetail>, t: Throwable) {
-                TODO("Not yet implemented")
+                //TODO("Not yet implemented")
             }
 
         })
@@ -67,14 +67,15 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
 
     suspend fun checkIfPokemonIsFavorite(name: String): Int {
         var isfavorite = 0
-        val value = GlobalScope.async {
 
-            val dao = PokemonDatabase(getApplication()).pokemonDao()
-            isfavorite = dao.isFavorite(name)
+            val value = GlobalScope.async {
 
+                val dao = PokemonDatabase(getApplication()).pokemonDao()
+                isfavorite = dao.isFavorite(name)
 
-        }
-        value.await()
+            }
+            value.await()
+
         return isfavorite
     }
 

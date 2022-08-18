@@ -3,9 +3,13 @@ package com.atila.pokedex.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.atila.pokedex.R
 import com.atila.pokedex.databinding.RecyclerviewItemBinding
@@ -16,8 +20,10 @@ import com.atila.pokedex.view.PokemonListFragmentDirections
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CardAdapter(private val pokemonList: ArrayList<Result>) :
-    RecyclerView.Adapter<CardAdapter.CardViewHolder>(), Filterable {
+class CardAdapter(
+    private val pokemonList: ArrayList<Result>,
+    private val onItemClicked: (Result, ImageView) -> Unit
+) : RecyclerView.Adapter<CardAdapter.CardViewHolder>(), Filterable {
 
     // arraylist to store filtered results
     var filteredList = ArrayList<Result>()
@@ -26,8 +32,22 @@ class CardAdapter(private val pokemonList: ArrayList<Result>) :
         filteredList = pokemonList
     }
 
-    class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val binding = RecyclerviewItemBinding.bind(itemView)
+    inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val binding = RecyclerviewItemBinding.bind(itemView)
+
+        // function for setting the each list items attributes
+        fun bind(item: Result) {
+            // for setting attributes
+            binding.pokemonListFragmentNameText.text = item.name
+            binding.listImage.downloadImage(
+                item.getImageURL(),
+                createPlaceHolder(binding.listImage.context)
+            )
+            // for shared element transition
+            binding.listImage.transitionName = item.name //-> unique transition name
+            binding.container.setOnClickListener { onItemClicked(item, binding.listImage) }
+
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
@@ -36,25 +56,14 @@ class CardAdapter(private val pokemonList: ArrayList<Result>) :
         return CardViewHolder(view)
     }
 
+
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         with(holder) {
-
-            // setting all recyclerview items attributes
-            binding.pokemonListFragmentNameText.text = filteredList[position].name
-            binding.listImage.downloadImage(
-                filteredList[position].getImageURL(),
-                createPlaceHolder(binding.listImage.context)
-            )
-
-            holder.itemView.setOnClickListener {
-                val action =
-                    PokemonListFragmentDirections.actionPokemonListFragmentToPokemonDetailFragment(
-                        filteredList[position].name
-                    )
-                Navigation.findNavController(it).navigate(action)
-            }
+            val item = filteredList[position]
+            bind(item)
         }
     }
+
 
     override fun getItemCount(): Int {
         return filteredList.size
@@ -79,7 +88,9 @@ class CardAdapter(private val pokemonList: ArrayList<Result>) :
                     val resultList = ArrayList<Result>()
                     for (row in pokemonList) {
                         //if the search string matches with the name add it to the list
-                        if (row.name.lowercase(Locale.ROOT).contains(charSearch.lowercase(Locale.ROOT))) {
+                        if (row.name.lowercase(Locale.ROOT)
+                                .contains(charSearch.lowercase(Locale.ROOT))
+                        ) {
                             resultList.add(row)
                         }
                     }
@@ -97,4 +108,7 @@ class CardAdapter(private val pokemonList: ArrayList<Result>) :
             }
         }
     }
+
+
 }
+

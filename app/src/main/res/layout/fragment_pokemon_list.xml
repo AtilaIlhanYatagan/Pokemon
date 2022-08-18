@@ -11,6 +11,7 @@
     tools:context=".view.PokemonListFragment">
 
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -43,6 +44,17 @@
 
     </ProgressBar>
 
+    <TextView
+        android:id="@+id/noElementFount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No element found on the list"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <SearchView
         android:queryHint="Search pokemons here"
         android:iconifiedByDefault="false"
@@ -54,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

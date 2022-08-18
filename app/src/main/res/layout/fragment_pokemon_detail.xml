@@ -68,40 +68,45 @@
             android:id="@+id/pokemonDetailNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@color/black"
             android:gravity="center"
             android:text="pokemon"
-            android:layout_marginLeft="50dp"
             android:textColor="@color/white"
             android:textSize="30sp">
 
         </TextView>
 
 
+        <ImageButton
 
-                <Button
+            android:id="@+id/addFavoriteButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:background="@drawable/ic_baseline_favorite_border_24_red"
+            >
 
-                    android:id="@+id/addFavoriteButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center"
-                    android:text="add">
+        </ImageButton>
 
-                </Button>
+        <ImageButton
 
-                <Button
+            android:id="@+id/removeFavoriteButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_baseline_favorite_24_red"
+            >
 
-                    android:id="@+id/removeFavoriteButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center"
-                    android:text="remove">
 
-                </Button>
+        </ImageButton>
 
 
     </LinearLayout>
@@ -125,7 +130,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -152,7 +157,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold">
 
             </TextView>
@@ -162,6 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Height"
+                android:textSize="15sp"
                 android:textColor="@color/white">
 
             </TextView>
@@ -241,7 +247,7 @@
             android:max="300"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="#F40808" />
+            android:progressTint="#FF6D00" />
 
     </LinearLayout>
 
@@ -256,7 +262,6 @@
             android:gravity="center"
             android:text="DEF"
             android:textColor="@color/white"
-
             android:textSize="15sp">
 
         </TextView>
@@ -271,7 +276,7 @@
             android:max="300"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="#F40808" />
+            android:progressTint="#388E3C" />
 
     </LinearLayout>
 
@@ -300,7 +305,7 @@
             android:max="300"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="#F40808" />
+            android:progressTint="#FBC02D" />
 
     </LinearLayout>
 
@@ -328,15 +333,9 @@
             android:max="300"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="#F40808" />
+            android:progressTint="#0091EA" />
 
     </LinearLayout>
-
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ToggleButton" />
 
 
 </LinearLayout>

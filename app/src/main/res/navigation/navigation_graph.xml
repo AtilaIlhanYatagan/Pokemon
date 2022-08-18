@@ -12,10 +12,9 @@
         <action
             android:id="@+id/action_pokemonListFragment_to_pokemonDetailFragment"
             app:destination="@id/pokemonDetailFragment" />
-        <action
-            android:id="@+id/action_pokemonListFragment_to_favoritePokemonList22"
-            app:destination="@id/favoritePokemonList2" />
+
     </fragment>
+
     <fragment
         android:id="@+id/pokemonDetailFragment"
         android:name="com.atila.pokedex.view.PokemonDetailFragment"
@@ -27,6 +26,7 @@
             android:name="pokemonName"
             app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/favoritePokemonList2"
         android:name="com.atila.pokedex.view.FavoritePokemonList"
@@ -39,4 +39,5 @@
             android:id="@+id/action_favoritePokemonList_to_pokemonDetailFragment"
             app:destination="@id/pokemonDetailFragment" />
     </fragment>
+
 </navigation>
