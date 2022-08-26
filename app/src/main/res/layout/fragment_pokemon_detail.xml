@@ -34,7 +34,7 @@
                 android:id="@+id/pokemonDetailFragmentId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="sasdd"
                 android:textAlignment="textEnd"
@@ -61,17 +61,19 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/pokemonDetailNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginLeft="75dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="50dp"
             android:layout_marginBottom="5dp"
+
             android:background="@color/black"
             android:gravity="center"
             android:text="pokemon"
@@ -86,11 +88,10 @@
             android:id="@+id/addFavoriteButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:gravity="center"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/ic_baseline_favorite_border_24_red"
-            >
+            android:gravity="center">
 
         </ImageButton>
 
@@ -99,12 +100,10 @@
             android:id="@+id/removeFavoriteButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/ic_baseline_favorite_24_red"
-            >
-
+            android:gravity="center">
 
         </ImageButton>
 
@@ -167,8 +166,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Height"
-                android:textSize="15sp"
-                android:textColor="@color/white">
+                android:textColor="@color/white"
+                android:textSize="15sp">
 
             </TextView>
 
@@ -177,10 +176,11 @@
 
     </LinearLayout>
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="5dp"
         android:background="@color/black"
         android:gravity="center"
@@ -208,16 +208,15 @@
 
         <ProgressBar
             android:id="@+id/progressBarHP"
-            style="?android:attr/progressBarStyleHorizontal"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="320dp"
             android:layout_height="26dp"
             android:layout_margin="10dp"
-            android:max="300"
+            android:max="200"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="#F40808">
-
-        </ProgressBar>
+            android:progressTint="#F40808"
+            android:visibility="visible" />
 
     </LinearLayout>
 
@@ -232,7 +231,6 @@
             android:gravity="center"
             android:text="ATK"
             android:textColor="@color/white"
-
             android:textSize="15sp">
 
         </TextView>
@@ -244,8 +242,10 @@
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:max="300"
+            android:indeterminate="false"
+            android:max="200"
             android:padding="16dp"
+            android:progress="0"
             android:progressBackgroundTint="@color/white"
             android:progressTint="#FF6D00" />
 
@@ -273,7 +273,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:max="300"
+            android:max="200"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
             android:progressTint="#388E3C" />
@@ -301,8 +301,7 @@
             android:layout_width="320dp"
             android:layout_height="25dp"
             android:layout_margin="10dp"
-
-            android:max="300"
+            android:max="200"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
             android:progressTint="#FBC02D" />
@@ -324,13 +323,15 @@
 
         </TextView>
 
+
         <ProgressBar
             android:id="@+id/progressBarEXP"
-            style="?android:attr/progressBarStyleHorizontal"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="320dp"
             android:layout_height="25dp"
             android:layout_margin="10dp"
-            android:max="300"
+            android:clickable="false"
+            android:max="200"
             android:padding="16dp"
             android:progressBackgroundTint="@color/white"
             android:progressTint="#0091EA" />

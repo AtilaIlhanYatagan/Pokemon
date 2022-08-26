@@ -40,6 +40,4 @@ interface PokemonDAO {
     suspend fun isFavorite(name: String) : Int
 
 
-
-
 }

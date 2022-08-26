@@ -17,6 +17,7 @@ abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDAO
 
     //Singleton to make one and only one thread can access the database
+
     companion object {
 
         //Anlatım : btk akademi ileri room database oluşturmak

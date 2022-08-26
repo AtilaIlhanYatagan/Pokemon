@@ -14,7 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atila.pokedex.adapters.CardAdapter
 import com.atila.pokedex.databinding.FragmentPokemonListBinding
+import com.atila.pokedex.util.animateViewFromBottomToTop
+import com.atila.pokedex.util.hideKeyboard
 import com.atila.pokedex.viewmodel.PokemonListViewModel
+
 
 class PokemonListFragment : Fragment() {
 
@@ -22,28 +25,31 @@ class PokemonListFragment : Fragment() {
     private lateinit var viewModel: PokemonListViewModel
     private lateinit var adapter: CardAdapter
 
-    //ViewBinding declarations
-    private lateinit var _binding: FragmentPokemonListBinding
-    private val binding get() = _binding
-
+    private var _binding: FragmentPokemonListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if (::_binding.isInitialized) {
-            return binding.root
-        }
         _binding = FragmentPokemonListBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        observeLiveData()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //fragment viewModel connection
-        viewModel = ViewModelProvider(this).get(PokemonListViewModel::class.java)
-        observeLiveData()
+        viewModel = ViewModelProvider(this)[PokemonListViewModel::class.java]
+
         viewModel.refreshData()
 
         //RecyclerView - Adapter connection
@@ -52,27 +58,51 @@ class PokemonListFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
 
 
+
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+
+
                 val listener = FilterListener {
                     if (adapter.itemCount == 0) {
                         binding.recyclerView.visibility = View.GONE
                         binding.noElementFount.visibility = View.VISIBLE
+                        binding.imageNoPokemon.visibility = View.VISIBLE
+                        hideKeyboard()
+                        animateViewFromBottomToTop(binding.imageNoPokemon)
+                        animateViewFromBottomToTop(binding.noElementFount)
                     } else {
                         binding.recyclerView.visibility = View.VISIBLE
                         binding.noElementFount.visibility = View.GONE
+                        binding.imageNoPokemon.visibility = View.GONE
                     }
                 }
-                adapter.filter.filter(newText,listener)
-                return false
+                /* adapter.filter.filter(newText, listener)
+                 return false
+
+                 //optional ( filter the list after at least three letters )
+                if (newText?.length!! > 2) {
+                    adapter.filter.filter(newText, listener)
+                    return false
+                }*/
+                return if (newText?.length!! == 0) {
+                    adapter.filter.filter("", listener)
+                    false
+                } else {
+                    adapter.filter.filter(newText, listener)
+                    false
+                }
             }
-
         })
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initRecyclerView() {
@@ -95,15 +125,14 @@ class PokemonListFragment : Fragment() {
     private fun observeLiveData() {
 
         viewModel.pokemons.observe(viewLifecycleOwner, Observer { pokemons ->
-            pokemons?.let {
 
-                pokemons.let {
-                    adapter.updatePokemonList(pokemons)
-                }
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.noElementFount.visibility = View.GONE
-
+            pokemons.let {
+                adapter.updatePokemonList(pokemons)
             }
+
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.noElementFount.visibility = View.GONE
+
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->

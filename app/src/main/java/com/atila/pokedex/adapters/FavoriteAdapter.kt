@@ -4,16 +4,15 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.atila.pokedex.R
 import com.atila.pokedex.databinding.RecyclerviewItemBinding
 import com.atila.pokedex.model.PokemonDetail
-import com.atila.pokedex.model.Result
 import com.atila.pokedex.util.createPlaceHolder
 import com.atila.pokedex.util.downloadImage
-import com.atila.pokedex.view.FavoritePokemonListDirections
+import com.atila.pokedex.util.setSafeOnClickListener
 
 
 class FavoriteAdapter(
@@ -36,7 +35,8 @@ class FavoriteAdapter(
 
             // for shared element transition
             binding.listImage.transitionName = item.name //-> unique transition name
-            binding.container.setOnClickListener { onItemClicked(item, binding.listImage) }
+            // click listener function is in the util/safeclicklistener
+            binding.container.setSafeOnClickListener { onItemClicked(item, binding.listImage) }
 
         }
 
@@ -58,13 +58,13 @@ class FavoriteAdapter(
             val item = pokemonList[position]
             bind(item)
 
+            this.itemView.animation = AnimationUtils.loadAnimation(
+                holder.itemView.context,
+                R.anim.recycler_view_load_anim
+            )
+
             binding.listImage.setBackgroundColor(setBackgroundColor(pokemonList[position].types[0].type.name))
 
-            holder.itemView.setOnClickListener {
-                val action = FavoritePokemonListDirections.actionFavoritePokemonListToPokemonDetailFragment(
-                        pokemonList[position].name)
-                Navigation.findNavController(it).navigate(action)
-            }
         }
     }
 

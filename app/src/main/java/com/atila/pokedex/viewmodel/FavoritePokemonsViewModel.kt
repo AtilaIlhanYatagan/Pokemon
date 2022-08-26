@@ -2,8 +2,10 @@ package com.atila.pokedex.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.atila.pokedex.model.PokemonDetail
 import com.atila.pokedex.service.PokemonDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -11,25 +13,19 @@ class FavoritePokemonsViewModel(application: Application) : BaseViewModel(applic
 
     val pokemonLiveData = MutableLiveData<ArrayList<PokemonDetail>>()
     val favoritePokemonCount = MutableLiveData<Int>()
-    private lateinit var pokemonListFromRoom: ArrayList<PokemonDetail>
+    private val dao = PokemonDatabase(getApplication()).pokemonDao()
 
     fun refreshData() {
-        launch {
-            val dao = PokemonDatabase(getApplication()).pokemonDao()
-            pokemonListFromRoom = dao.getAllPokemons() as ArrayList<PokemonDetail>
-            pokemonLiveData.value = pokemonListFromRoom
+
+        viewModelScope.launch(Dispatchers.Main) {
+            pokemonLiveData.value = dao.getAllPokemons() as ArrayList<PokemonDetail>
         }
     }
 
-    fun refreshFavoritePokemonCount(): Int {
-        var favoritePokemonCountInt = 0
-        launch {
-            val dao = PokemonDatabase(getApplication()).pokemonDao()
-            favoritePokemonCount.value = dao.getFavoriteCount()
-            favoritePokemonCountInt = dao.getFavoriteCount()
+    fun refreshFavoritePokemonCount() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            favoritePokemonCount.postValue(dao.getFavoriteCount())
         }
-        return favoritePokemonCountInt
     }
-
-
 }

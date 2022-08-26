@@ -3,20 +3,17 @@ package com.atila.pokedex.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.view.animation.AnimationUtils
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.atila.pokedex.R
 import com.atila.pokedex.databinding.RecyclerviewItemBinding
 import com.atila.pokedex.model.Result
 import com.atila.pokedex.util.createPlaceHolder
 import com.atila.pokedex.util.downloadImage
-import com.atila.pokedex.view.PokemonListFragmentDirections
+import com.atila.pokedex.util.setSafeOnClickListener
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -45,7 +42,7 @@ class CardAdapter(
             )
             // for shared element transition
             binding.listImage.transitionName = item.name //-> unique transition name
-            binding.container.setOnClickListener { onItemClicked(item, binding.listImage) }
+            binding.container.setSafeOnClickListener { onItemClicked(item, binding.listImage) }
 
         }
     }
@@ -61,7 +58,12 @@ class CardAdapter(
         with(holder) {
             val item = filteredList[position]
             bind(item)
+            this.itemView.animation = AnimationUtils.loadAnimation(
+                holder.itemView.context,
+                R.anim.recycler_view_load_anim
+            )
         }
+
     }
 
 
@@ -84,7 +86,7 @@ class CardAdapter(
                 //if searchView is empty set the filteredList as the mainList
                 if (charSearch.isEmpty()) {
                     filteredList = pokemonList
-                } else {
+                }else {
                     val resultList = ArrayList<Result>()
                     for (row in pokemonList) {
                         //if the search string matches with the name add it to the list

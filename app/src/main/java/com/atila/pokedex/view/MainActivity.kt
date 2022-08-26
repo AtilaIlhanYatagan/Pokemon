@@ -37,30 +37,31 @@ class MainActivity : AppCompatActivity() {
         // An icon only badge will be displayed unless a number is set:
         badge.number = 0
 
-
-        observeLiveData()
         // to set the favorite badge count on the launch of the application
-        refreshBadgeCount(viewModel.refreshFavoritePokemonCount())
+        viewModel.refreshFavoritePokemonCount()
 
+        // update ui with observeLiveData
+        observeLiveData()
 
         supportActionBar?.hide()
     }
 
     private fun observeLiveData(){
-        viewModel.favoritePokemonCount.observeForever(Observer {
-                count: Int ->
+        viewModel.favoritePokemonCount.observe(this,Observer { count: Int ->
             // Perform an action with the latest item data
             count.let {
                 badge.number = count
-                println("mainactivity observelivedata çağırıldı badge number -> "+ badge.number)
             }
         })
 
     }
 
-    fun refreshBadgeCount(favoriteCount : Int){
-        badge.number = favoriteCount
-        println("refreshbadgecount çağırıldı -> favorite count -> $favoriteCount")
+    fun increaseBadgeCount(){
+        badge.number++
+    }
+
+    fun decreaseBadgeCount(){
+        badge.number--
     }
 
 }

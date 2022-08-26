@@ -8,75 +8,56 @@ import com.atila.pokedex.model.*
 import com.atila.pokedex.service.PokemonAPIService
 import com.atila.pokedex.service.PokemonDatabase
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 class PokemonDetailsViewModel(application: Application) : BaseViewModel(application) {
 
     val pokemonLiveData: MutableLiveData<PokemonDetail> = MutableLiveData<PokemonDetail>()
     private val apiService = PokemonAPIService()
 
+    //https://medium.com/androiddevelopers/easy-coroutines-in-android-viewmodelscope-25bffb605471
+    fun setLiveData(name: String) {
+        viewModelScope.launch {
+            pokemonLiveData.postValue(getPokemonDataFromApi(name)!!)
+        }
+    }
+
+    private suspend fun getPokemonDataFromApi(name: String): PokemonDetail? =
+        withContext(Dispatchers.IO) {
+            val response = apiService.getPokemonData(name)
+            var pokemonFromApi: PokemonDetail? = null
+            if (response.isSuccessful) {
+                pokemonFromApi = response.body()
+            }
+            return@withContext pokemonFromApi
+        }
+
+
+    suspend fun checkIfPokemonIsFavorite(name: String): Int {
+        var isfavorite = 0
+
+        val value = viewModelScope.async {
+
+            val dao = PokemonDatabase(getApplication()).pokemonDao()
+            isfavorite = dao.isFavorite(name)
+
+        }
+        value.await()
+        return isfavorite
+    }
+
     fun storePokemonToRoom(pokemon: PokemonDetail) {
         launch {
-            //pokemonLiveData.value?.isFavorite = true
             val dao = PokemonDatabase(getApplication()).pokemonDao()
             dao.insertPokemonToDatabase(pokemon)
         }
     }
 
-    fun removePokemonFromRoom(pokemon: PokemonDetail) {
+    fun removePokemonFromRoom(name: String) {
         launch {
-            // pokemonLiveData.value?.isFavorite = false
             val dao = PokemonDatabase(getApplication()).pokemonDao()
-            dao.deletePokemonFromFavorites(pokemon.name)
+            dao.deletePokemonFromFavorites(name)
         }
-    }
-
-    fun getPokemonDataFromApi(name: String) {
-
-        apiService.getPokemonData(name).enqueue(object : Callback<PokemonDetail> {
-
-            override fun onResponse(call: Call<PokemonDetail>, response: Response<PokemonDetail>) {
-
-                val pokemonDetail = response.body()
-                pokemonDetail?.let {
-                    pokemonLiveData.value = pokemonDetail
-                }
-            }
-
-            override fun onFailure(call: Call<PokemonDetail>, t: Throwable) {
-                //TODO("Not yet implemented")
-            }
-
-        })
-
-    }
-
-    suspend fun refreshFavoritePokemonCount(): Int {
-        var favoritePokemonCountInt = 0
-        val value = GlobalScope.async {
-
-            val dao = PokemonDatabase(getApplication()).pokemonDao()
-            favoritePokemonCountInt = dao.getFavoriteCount()
-
-        }
-        value.await()
-        return favoritePokemonCountInt
-    }
-
-    suspend fun checkIfPokemonIsFavorite(name: String): Int {
-        var isfavorite = 0
-
-            val value = GlobalScope.async {
-
-                val dao = PokemonDatabase(getApplication()).pokemonDao()
-                isfavorite = dao.isFavorite(name)
-
-            }
-            value.await()
-
-        return isfavorite
     }
 
     fun setBackgroundColor(typeString: String): Int {
@@ -105,6 +86,4 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
         }
         return 0
     }
-
-
 }

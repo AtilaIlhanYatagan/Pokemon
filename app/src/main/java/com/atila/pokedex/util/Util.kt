@@ -15,7 +15,6 @@ fun ImageView.downloadImage(url: String?, placeholder: CircularProgressDrawable)
     Glide.with(context)
         .load(url)
         .into(this)
-        .apply { RequestOptions().dontTransform() }
 }
 
 fun createPlaceHolder(context: Context): CircularProgressDrawable {

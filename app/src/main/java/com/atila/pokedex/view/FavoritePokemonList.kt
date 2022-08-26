@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atila.pokedex.adapters.FavoriteAdapter
 import com.atila.pokedex.databinding.FragmentFavoritePokemonListBinding
+import com.atila.pokedex.databinding.FragmentPokemonListBinding
 import com.atila.pokedex.viewmodel.FavoritePokemonsViewModel
 import kotlin.isInitialized as isInitialized
 
@@ -21,16 +22,14 @@ class FavoritePokemonList : Fragment() {
     private lateinit var viewModel: FavoritePokemonsViewModel
     private lateinit var adapter: FavoriteAdapter
 
-    private lateinit var _binding: FragmentFavoritePokemonListBinding
-    private val binding get() = _binding
+    private var _binding: FragmentFavoritePokemonListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        if (::_binding.isInitialized) {
-            return binding.root
-        }
+    ): View? {
         _binding = FragmentFavoritePokemonListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,6 +47,11 @@ class FavoritePokemonList : Fragment() {
 
         observeLiveData()
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initRecyclerView() {
