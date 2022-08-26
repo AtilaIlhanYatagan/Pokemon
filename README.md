@@ -13,7 +13,7 @@ This is the native android application that I created for my 2022 summer intersh
 
   
 ## Creator
-  Atila İlhan Yatağan
+  Atila İlhan Yatağan  
   Computer Science Student At Marmara University
 
 
