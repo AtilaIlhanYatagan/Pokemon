@@ -12,11 +12,12 @@ This is the native android application that I created for my 2022 summer intersh
 
 
   
-## Creator: 
+## Creator
   Atila İlhan Yatağan
   Computer Science Student At Marmara University
 
 
 
+## References
 - Values from PokeApi (https://pokeapi.co/)
 - Original idea (https://github.com/skydoves/Pokedex)
