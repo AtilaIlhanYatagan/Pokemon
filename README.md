@@ -1,5 +1,5 @@
 
-# This is the first native android application that I created for my 2022 summer intership at Softtech.
+# This is the native android application that I created for my 2022 summer intership at Softtech.
 
 
 It is a pokemon listing app that gets the pokemons from PokeApi (https://pokeapi.co/)
